@@ -27,6 +27,8 @@ public class AccordionView extends RelativeLayout {
 
     View[] children;
 
+    Boolean __isExpanded = false;
+
     Boolean isExpanded = false;
 
     Boolean isAnimated = false;
@@ -113,6 +115,7 @@ public class AccordionView extends RelativeLayout {
         isPartitioned = a.getBoolean(R.styleable.accordion_isPartitioned, false);
         headingString = a.getString(R.styleable.accordion_heading);
         isExpanded = a.getBoolean(R.styleable.accordion_isExpanded, false);
+        this.__isExpanded = isExpanded;
         headingTextSize = a.getDimensionPixelSize(R.styleable.accordion_headingTextSize, 20);
         if (WidgetHelper.isNullOrBlank(headingString))
             throw new IllegalStateException("Please specify a heading for the accordion");
@@ -286,8 +289,7 @@ public class AccordionView extends RelativeLayout {
         if(!WidgetHelper.isNullOrBlank(listener)) {
             listener.onExpanded(this);
         }
-
-
+        this.__isExpanded = true;
     }
 
     /***
@@ -310,10 +312,12 @@ public class AccordionView extends RelativeLayout {
         dropupImage.setVisibility(GONE);
         dropdownImage.setVisibility(VISIBLE);
 
+
         if(!WidgetHelper.isNullOrBlank(listener)) {
             listener.onCollapsed(this);
         }
 
+        this.__isExpanded = false;
 
     }
 
@@ -403,12 +407,25 @@ public class AccordionView extends RelativeLayout {
         return isExpanded;
     }
 
+    public Boolean isExpanded()
+    {
+        return __isExpanded;
+    }
+
     /***
      * Tell the accordion whether to expand or remain collapsed by default, when drawn
      * @param expanded
      */
     public void setExpanded(Boolean expanded) {
         isExpanded = expanded;
+        if(isExpanded)
+        {
+            this.expand();
+        }
+        else
+        {
+            this.collapse();
+        }
     }
 
     /***
